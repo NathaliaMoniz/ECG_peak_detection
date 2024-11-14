@@ -7,10 +7,10 @@ peak_detector = Evaluator()
 
 
 ### Select database
-# test_database = 'MIT_BIH'
+test_database = 'MIT_BIH'
 # test_database = 'INCART'
 # test_database = 'QTDB'
-test_database = 'MIT_BIH_ST'
+# test_database = 'MIT_BIH_ST'
 # test_database = 'European_ST_T'
 # test_database = 'TELE'
 
@@ -43,13 +43,14 @@ print(table_summary)
 
 
 ### Visualize a specific ECGs
-t_idx = 0
+t_idx = 15
 t_patient = table_summary.index[t_idx]
 t_ecg = peak_detector.set_dict['ecg'][t_idx]
 t_label = peak_detector.set_dict['label'][t_idx]
 t_pred_TP = peak_detector.set_dict['pred_TP'][t_idx]
 t_pred_FP = peak_detector.set_dict['pred_FP'][t_idx]
 t_pred_FN = peak_detector.set_dict['pred_FN'][t_idx]
+t_pred_FN = t_pred_FN.astype(int)
 t_xtick = np.arange(t_ecg.shape[0])/360
 
 plt.plot(t_xtick, t_ecg, color='black')

@@ -53,7 +53,8 @@ class Evaluator:
     def find_peaks(self):
         torch.cuda.empty_cache()
         model = Sep_conv_detector(n_channel=n_channel, atrous_rate=atrous_rate).to(device)
-        model.load_state_dict(torch.load(self.model_path))
+        state_dict = torch.load(self.model_path, map_location=torch.device('cpu'))
+        model.load_state_dict(state_dict)
         model.eval()
 
         with torch.no_grad():
