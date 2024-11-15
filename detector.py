@@ -7,12 +7,13 @@ peak_detector = Evaluator()
 
 
 ### Select database
-test_database = 'MIT_BIH'
+# test_database = 'MIT_BIH'
 # test_database = 'INCART'
 # test_database = 'QTDB'
 # test_database = 'MIT_BIH_ST'
 # test_database = 'European_ST_T'
 # test_database = 'TELE'
+test_database = 'ECG-ID'
 
 '''
 The current model was developed by training MIT_BIH, INCART, and QT databases.
@@ -43,7 +44,7 @@ print(table_summary)
 
 
 ### Visualize a specific ECGs
-t_idx = 15
+t_idx = 56
 t_patient = table_summary.index[t_idx]
 t_ecg = peak_detector.set_dict['ecg'][t_idx]
 t_label = peak_detector.set_dict['label'][t_idx]

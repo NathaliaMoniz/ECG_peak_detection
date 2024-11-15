@@ -122,12 +122,39 @@ class DB_loading:
         database = self.report_table.loc[self.table_loc, 'Database']
         patient = self.report_table.loc[self.table_loc, 'Patient']
         num = self.report_table.loc[self.table_loc, 'Num']
-        path_file = self.path_database+database+'/'+str(patient)
 
+        if database == 'ECG-ID':
+            path_patient_dir = os.path.join(self.path_database, database, patient)  # Directorio del paciente, por ejemplo 'ECG-ID/Person_01'
+            records = [f for f in os.listdir(path_patient_dir) if f.endswith('.hea')]
+            
+        else:
+            path_file = os.path.join(self.path_database, database, str(patient))
+        
         if verbose == True:
             print('Database : {0}, Patient : {1}'.format(database, patient))
 
-        if database != 'TELE':
+        # Verifica si es la base de datos ECG-ID
+        if database == 'ECG-ID':
+        # Busca el archivo .hea correcto, que es rec_1.hea, rec_2.hea, etc.
+            for record_id in records:
+                record_id = os.path.splitext(record_id)[0]
+                path_file = os.path.join(path_patient_dir, record_id)  # Ruta completa del archivo .hea (por ejemplo, 'rec_1.hea')
+                
+                record = wfdb.rdsamp(path_file)  # Carga los datos del ECG usando WFDB
+                ecg = record[0][:, num]  # Obtiene la señal ECG del canal específico
+                fs = record[1]['fs']  # Obtiene la frecuencia de muestreo
+
+                # Cargar anotaciones de picos R del archivo `.atr`
+                ann = wfdb.rdann(path_file, 'atr')  # Ruta del archivo .atr (por ejemplo, 'rec_1.atr')
+                label = self.load_annotation(ann)  # Extrae las anotaciones de picos R
+
+                # No se requieren máscaras adicionales para ECG-ID (pero se podría añadir más adelante si fuera necesario)
+                mask = np.array([])
+
+                # No es necesario continuar, porque ya se cargó un archivo .hea y se obtuvo el ECG y las anotaciones
+                break
+
+        elif database != 'TELE':
             # load data
             record = wfdb.rdsamp(path_file)
             ecg = record[0][:, num]
